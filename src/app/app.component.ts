@@ -1,19 +1,19 @@
 import {Component, OnInit} from '@angular/core';
-import {HelloWorldService} from './hello-world.service';
+import {ApiService} from './api.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
 
   title;
 
-  constructor(private hw: HelloWorldService) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit() {
-    this.hw.getTitle()
+    this.api.getTitle()
       .subscribe(data => this.title = data.title);
 
     console.log(this.title);

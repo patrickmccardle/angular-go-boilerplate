@@ -1,0 +1,17 @@
+version: '3.4'
+services:
+  # angular and golang are started
+  goang:
+    container_name: goang
+    image: atompower/goang
+    build:
+      context: build
+    volumes:
+      - .:/go/src/github.com/atompower/your-awesome-project
+    ports:
+      - "4200:4200"
+      - "4201:4201"
+    command:
+      - "tail"
+      - "-f"
+      - "/dev/null"

@@ -5,7 +5,7 @@ import (
   "bytes"
 )
 
-func StructToJson (data interface{}) ([]byte, error) {
+func StructToJSON (data interface{}) ([]byte, error) {
   buf := new(bytes.Buffer)
 
   if err := json.NewEncoder(buf).Encode(data); err != nil {
