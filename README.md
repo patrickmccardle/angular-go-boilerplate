@@ -2,7 +2,7 @@
 From within the root directory, run `build` and then `make docker_build` to build the docker container with the volume that is defined in the docker-compose file
 
 # Running
-Running `make docker_run` with run the docker-compose file, and bash the user into the newly created docker container with `docker exec -t goang bash`
+Running `make docker_run` with run the docker-compose file, and bash the user into the newly created docker container with `docker exec -it goang bash`
 
 # In the container
 From within the container, you can run `npm run install-dependencies` to get all necessary Go libraries and also runs the regular `npm install` command to get all necessary node_module packages.
