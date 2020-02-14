@@ -1,27 +1,17 @@
-# YourAwesomeProject
+# How To Build
+From within the root directory, run `build` and then `make docker_build` to build the docker container with the volume that is defined in the docker-compose file
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.23.
+# Running
+Running `make docker_run` with run the docker-compose file, and bash the user into the newly created docker container with `docker exec -t goang bash`
 
-## Development server
+# In the container
+From within the container, you can run `npm run install-dependencies` to get all necessary Go libraries and also runs the regular `npm install` command to get all necessary node_module packages.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# Starting the servers
+After the dependencies have been installed, you can run `npm start` which calls a bash script `serve.sh` which starts the angular local-dev server on `--host 0.0.0.0`. This makes sure that the frontend is reachable from out host machine even though it is hosted in the docker container. This command also tells Gin (our RESTapi server in Go) to spin up as well given a specific port (4201)
 
-## Code scaffolding
+# Hot reload
+Make any changes to frontend or backend code and save to see the changes reload in front of you. 
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+# Take aways
+Currently there is no implementation of a database or ORM in the project. Also there is no real means for authentication yet. Those ideally will be the next 2 things to add
