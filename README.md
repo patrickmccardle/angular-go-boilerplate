@@ -1,5 +1,5 @@
 # How To Build
-From within the root directory, run `build` and then `make docker_build` to build the docker container with the volume that is defined in the docker-compose file
+From within the root directory, run `make docker_build` to build the docker container with the volume that is defined in the docker-compose file
 
 # Running
 Running `make docker_run` with run the docker-compose file, and bash the user into the newly created docker container with `docker exec -it goang bash`
