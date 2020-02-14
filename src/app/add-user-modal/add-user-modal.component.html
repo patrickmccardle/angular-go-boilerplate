@@ -1,0 +1,63 @@
+<div *ngIf="launchAddUserModal">
+  <h1 mat-dialog-title>Add User</h1>
+  <div mat-dialog-content>
+  <label>Email</label>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.Email">
+  </mat-form-field>
+  <label>Username</label>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.Name">
+  </mat-form-field>
+  <label>Role</label>
+  <mat-form-field>
+    <mat-select placeholder="Role" [(ngModel)]="data.Role">
+                  <mat-option *ngFor="let role of roles" [(value)]=role>{{role}}
+                  </mat-option>
+                </mat-select>
+  </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Discard</button>
+  <button mat-button (click)="addUser(data)" [mat-dialog-close]="data" cdkFocusInitial>Create</button>
+  </div>
+</div>
+
+<div *ngIf="launchEditUserModal">
+  <h1 mat-dialog-title>Edit User</h1>
+  <div mat-dialog-content>
+  <label>Email</label>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.Email">
+  </mat-form-field>
+  <label>Username</label>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.Name">
+  </mat-form-field>
+  <label>Role</label>
+  <mat-form-field>
+    <mat-select placeholder="Role" [(ngModel)]="data.Role">
+                  <mat-option *ngFor="let role of roles" [(value)]=role>{{role}}
+                  </mat-option>
+                </mat-select>
+  </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Discard</button>
+  <button mat-button (click)="editUser(data)" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+  </div>
+</div>
+
+<div *ngIf="launchDeleteUserModal">
+  <h1 mat-dialog-title>DELETE User</h1>
+  <div mat-dialog-content>
+  <label>Email</label>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.Email">
+  </mat-form-field>
+  </div>
+  <div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Discard</button>
+  <button mat-button (click)="deleteUser(data.Email)" [mat-dialog-close]="data" cdkFocusInitial>Confirm</button>
+  </div>
+</div>

@@ -1,0 +1,74 @@
+<div>
+  <ol>
+    <li>
+      <mat-form-field>
+        <input matInput [(ngModel)]="name" placeholder="What's your name?">
+      </mat-form-field>
+    </li>
+    <li>
+      <button mat-raised-button (click)="openDialog()">Pick one</button>
+    </li>
+    <br />
+    <li *ngIf="animal">
+      You chose: <p style="font-weight: bold">{{animal}}</p>
+    </li>
+  </ol>
+</div>
+
+<div>
+  <br>
+    <div class="container">
+        <div class="container">
+          <div fxLayout="column" fxLayoutGap="20px" fxLayout.gt-md="row"  fxLayoutAlign="space-around center" class="content">
+              <div class="blocks">
+                  <button button="submit" mat-raised-button color="primary">
+                      <mat-icon>add</mat-icon> Add Schedule
+                  </button>
+              </div>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+      <div fxLayout="row" fxLayoutAlign="center center" class="content">
+        <mat-card class="card" >
+          <mat-card-title fxLayout.gt-xs="row" fxLayout.xs="column">
+            <h3>Schedules</h3>
+          </mat-card-title>
+          <mat-card-content>
+              <div class="example-container mat-elevation-z8">
+                  <mat-table #table [dataSource]="dataSource">
+                  <ng-container matColumnDef="ID">
+                    <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let schedule"> {{schedule.ID}} </mat-cell>
+                  </ng-container>
+                    <ng-container matColumnDef="PanelName">
+                      <mat-header-cell *matHeaderCellDef> PanelName </mat-header-cell>
+                      <mat-cell *matCellDef="let schedule"> {{schedule.PanelName}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="SwitchID">
+                      <mat-header-cell *matHeaderCellDef> SwitchID </mat-header-cell>
+                      <mat-cell *matCellDef="let schedule"> {{schedule.SwitchID}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="Operation">
+                      <mat-header-cell *matHeaderCellDef> Operation </mat-header-cell>
+                      <mat-cell *matCellDef="let schedule"> {{schedule.Operation}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="delete">
+                      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                      <mat-cell *matCellDef="let schedule">
+                        <a id="delete"
+                            type="button">
+                          <mat-icon  class="icon">delete</mat-icon>
+                        </a>
+                      </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="scheduleColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: scheduleColumns;"></mat-row>
+                  </mat-table>
+                </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

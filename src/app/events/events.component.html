@@ -1,3 +1,53 @@
-<div style="border: 1px solid black; ">
-  {{events}}
+<div>
+  <br>
+    <div class="container">
+        <div class="container">
+          <div fxLayout="column" fxLayoutGap="20px" fxLayout.gt-md="row"  fxLayoutAlign="space-around center" class="content">
+              <div class="blocks">
+                  <button button="submit" mat-raised-button color="primary">
+                      <mat-icon>add</mat-icon> Add Event
+                  </button>
+              </div>
+        </div>
+    </div>
+    <br>
+    <div class="container">
+      <div fxLayout="row" fxLayoutAlign="center center" class="content">
+        <mat-card class="card" >
+          <mat-card-title fxLayout.gt-xs="row" fxLayout.xs="column">
+            <h3>Recent Events</h3>
+          </mat-card-title>
+          <mat-card-content>
+              <div class="example-container mat-elevation-z8">
+                  <mat-table #table [dataSource]="dataSource">
+                  <ng-container matColumnDef="ID">
+                    <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.ID  | date: 'd/M/y'}} </mat-cell>
+                  </ng-container>
+                    <ng-container matColumnDef="Title">
+                      <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> {{element.Title}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="Description">
+                      <mat-header-cell *matHeaderCellDef> Category </mat-header-cell>
+                      <mat-cell *matCellDef="let element"> {{element.Description}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="delete">
+                      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                      <mat-cell *matCellDef="let element">
+                        <a style="position: relative; left: 50%;" id="delete"
+                            type="button">
+                          <mat-icon  class="icon">delete</mat-icon>
+                        </a>
+                      </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="eventColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: eventColumns;"></mat-row>
+                  </mat-table>
+                </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
   </div>
+</div>

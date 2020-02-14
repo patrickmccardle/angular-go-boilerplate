@@ -1,16 +1,27 @@
 package utils
 
 import (
-  "encoding/json"
-  "bytes"
+	"bytes"
+	"encoding/json"
+	"path"
+	"strings"
 )
 
-func StructToJSON (data interface{}) ([]byte, error) {
-  buf := new(bytes.Buffer)
+func ShiftPath(p string) (head, tail string) {
+	p = path.Clean("/" + p)
+	i := strings.Index(p[1:], "/") + 1
+	if i <= 0 {
+		return p[1:], "/"
+	}
+	return p[1:i], p[i:]
+}
 
-  if err := json.NewEncoder(buf).Encode(data); err != nil {
-    return nil, err
-  }
+func StructToJSON(data interface{}) ([]byte, error) {
+	buf := new(bytes.Buffer)
 
-  return buf.Bytes(), nil
+	if err := json.NewEncoder(buf).Encode(data); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }
