@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "install-dependencies": "npm install && go get -u github.com/mattn/go-sqlite3@v1.12.0 && go get github.com/codegangsta/gin && go get github.com/gorilla/mux && go get github.com/rs/cors"
+    "install-dependencies": "npm install && go get -u github.com/jinzhu/gorm && go get github.com/codegangsta/gin && go get github.com/gorilla/mux && go get github.com/rs/cors"
   },
   "private": true,
   "dependencies": {

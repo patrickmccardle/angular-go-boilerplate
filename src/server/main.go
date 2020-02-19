@@ -10,8 +10,13 @@ import (
 
 	"github.com/atompower/your-awesome-project/src/server/utils"
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/rs/cors"
 )
+
+var db *gorm.DB
+var err error
 
 type event struct {
 	ID          string `json:"ID"`
@@ -47,39 +52,59 @@ var schedules = allSchedules{
 	},
 }
 
-type user struct {
+type User struct {
 	Email string `json:"Email"`
 	Name  string `json:"Name"`
 	Role  int    `json:"Role"`
 }
 
-type allUsers []user
-
-var usersList = allUsers{
-	{
-		Email: "demo@atompower.com",
-		Name:  "demo",
-		Role:  1,
-	},
-}
+var userList []User
 
 func getAllUsers(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(usersList)
+
+	// var users []User
+	// db.Raw("SELECT * from users").Scan(&users)
+	// fmt.Println("{}", users)
+	// fmt.Println("{}", &users)
+	// users := make([]*User, 0)
+	// db.Table("users").Find(&users)
+	// // at this point allUsers is a []*User (array of pointers to a User type)
+	// fmt.Println(&users)
+	// fmt.Println(users)
+	// json.NewEncoder(w).Encode(&users)
+
+	users := []User{}
+	if err := db.Find(&users).Error; err != nil {
+		// r.AbortWithStatus(404)
+		fmt.Println(err)
+	} else {
+		fmt.Println(users)
+		fmt.Println(&users)
+		json.NewEncoder(w).Encode(users)
+	}
+
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
 	userEmail := mux.Vars(r)["Email"]
-
-	for _, singleUser := range usersList {
-		if singleUser.Email == userEmail {
-			json.NewEncoder(w).Encode(singleUser)
-		}
+	var user User
+	if err := db.Where("Email = ?", userEmail).First(&user).Error; err != nil {
+		// r.AbortWithStatus(404)
+		fmt.Println(err)
+	} else {
+		fmt.Println(&user)
+		json.NewEncoder(w).Encode(&user)
 	}
+	// for _, singleUser := range users {
+	// 	if singleUser.Email == userEmail {
+	// 		json.NewEncoder(w).Encode(singleUser)
+	// 	}
+	// }
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
 	userEmail := mux.Vars(r)["Email"]
-	var updatedUser user
+	var updatedUser User
 
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -87,11 +112,13 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(reqBody, &updatedUser)
 
-	for i, singleUser := range usersList {
+	for i, singleUser := range userList {
 		if singleUser.Email == userEmail {
+			db.First(&singleUser)
 			singleUser.Name = updatedUser.Name
 			singleUser.Role = updatedUser.Role
-			usersList = append(usersList[:i], singleUser)
+			db.Save(&singleUser)
+			userList = append(userList[:i], singleUser)
 			json.NewEncoder(w).Encode(singleUser)
 		}
 	}
@@ -100,24 +127,36 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 func deleteUser(w http.ResponseWriter, r *http.Request) {
 	userEmail := mux.Vars(r)["Email"]
 
-	for i, singleUser := range usersList {
+	for i, singleUser := range userList {
 		if singleUser.Email == userEmail {
-			usersList = append(usersList[:i], usersList[i+1:]...)
+			userToDelete := User{Email: singleUser.Email}
+			fmt.Println(userToDelete)
+			fmt.Println(userEmail)
+			db.Where("Email = ?", userEmail).Delete(&userToDelete)
+			userList = append(userList[:i], userList[i+1:]...)
 			fmt.Fprintf(w, "The user with email %v has been deleted successfully", userEmail)
 		}
 	}
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
-	var newUser user
+	// var u2 user   // identify a Person type for us to store the results in
+	// db.First(&u2) // Find the first record in the Database and store it in p3
+	// fmt.Println(u1.Email)
+	// fmt.Println(u2.Role)
+	var newUser User
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Fprintf(w, "Kindly enter data with the event title and description only in order to update")
 	}
+	fmt.Println(reqBody)
 	json.Unmarshal(reqBody, &newUser)
-	usersList = append(usersList, newUser)
-	w.WriteHeader(http.StatusCreated)
+	u1 := User{Email: newUser.Email, Name: newUser.Name, Role: newUser.Role}
+	db.Create(&u1)
+	fmt.Println(newUser)
+	fmt.Println(newUser.Email)
 	json.NewEncoder(w).Encode(newUser)
+	fmt.Println(newUser)
 }
 
 func getAllSchedules(w http.ResponseWriter, r *http.Request) {
@@ -216,6 +255,19 @@ func helloWorld(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	db, err = gorm.Open("sqlite3", "myTest.db")
+	if err != nil {
+		fmt.Print(err)
+	}
+	defer db.Close()
+	db.AutoMigrate(&User{})
+	// u1 := user{Email: "demo@atompower.com", Name: "demo", Role: 1}
+	// db.Create(&u1)
+	// var u2 user   // identify a Person type for us to store the results in
+	// db.First(&u2) // Find the first record in the Database and store it in p3
+	// fmt.Println(u1.Email)
+	// fmt.Println(u2.Role)
+
 	r := mux.NewRouter()
 	// r.HandleFunc("/", homeLink)
 	r.HandleFunc("/event", createEvent).Methods("POST")
@@ -229,14 +281,14 @@ func main() {
 	r.HandleFunc("/users", getAllUsers).Methods("GET")
 	r.HandleFunc("/user/{Email}", getUser).Methods("GET")
 	r.HandleFunc("/user/{Email}", deleteUser).Methods("DELETE")
-	r.HandleFunc("/user/update/{Email}", updateUser).Methods("POST")
+	r.HandleFunc("/user/update/{Email}", updateUser).Methods("PATCH")
 	r.HandleFunc("/createUser", createUser).Methods("POST")
 	r.HandleFunc("/hello-world", helloWorld)
 
 	// Solves Cross Origin Access Issue
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:4200", "http://localhost"},
-		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete},
+		AllowedMethods: []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	})
 	handler := c.Handler(r)
 
